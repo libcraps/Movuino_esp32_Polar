@@ -19,6 +19,12 @@ void printMovuinoData() {
   Serial.println();  
 }
 
+void getAccel(){
+//   mpu9250.accelUpdate();
+//  ax = mpu9250.accelX();
+//  ay = mpu9250.accelY();
+//  az = mpu9250.accelZ();
+}
 float splitFloatDecimal(float f_){
   int i_ = f_ * 1000;
   return i_/1000.0f;

@@ -9,8 +9,11 @@ static void notifyCallback(BLERemoteCharacteristic* pBLERemoteCharac, uint8_t* p
     Udp.write(&pData[i], sizeof(uint8_t));
     Serial.print(pData[i]);
     Serial.print(" ");
+    
   }
+  OscWiFi.send(hostIP, portOut, "/bpm", 1);
   Udp.endPacket();
+  Serial.println();
 }
 
 bool connectToBT(BLEAddress pAddress) 

@@ -1,8 +1,11 @@
 #include "BLEDevice.h"
 #include <WiFi.h>
 #include <WiFiUdp.h>
-#include "MPU6050.h"
-
+#include <ArduinoOSC.h>
+#include "Wire.h"
+//#include "MPU6050.h"
+//#include "I2Cdev.h"
+#include <MPU9250_asukiaaa.h>
 
 //Bluetooth
 BLEUUID serviceUUID(BLEUUID((uint16_t)0x180D)); // remote service
@@ -15,7 +18,8 @@ BLERemoteCharacteristic* pCaract;
 //Wifi
 char* ssid = "GHG9D7511A0001 2565"; //Network SSID
 char* password = "A!26p741"; //Network password
-char * hostIP =  "127.0.0.1";       // IP address of the host computer
+char * hostIP =  "192.168.137.1";       // IP address of the host computer
+const int send_port = 55555;
 IPAddress remoteIP(192, 168, 137, 190); // remote IP to send UDP packet to
 unsigned int remotePort = 2390; // remote port to send UDP packet to
 const unsigned int portOut = 7400;// port on which data are sent (send OSC message)
@@ -23,7 +27,8 @@ const unsigned int portOut = 7400;// port on which data are sent (send OSC messa
 WiFiUDP Udp;
 
 //MPU
-MPU6050 accelgyro;
+MPU9250_asukiaaa mpu9250;
+//MPU6050 mpu6050;
 int packetNumber = 0;
 int16_t ax, ay, az; // store accelerometre values
 int16_t gx, gy, gz; // store gyroscope values
@@ -59,7 +64,14 @@ class advDevCallBacks: public BLEAdvertisedDeviceCallbacks
 
 void setup() 
 {
+  //Wire.begin();
+  //mpu9250.setWire(&Wire);
   Serial.begin(115200);
+  //mpu6050.initialize();
+  //Serial.println("Initializing I2C devices...");
+  //mpu6050.initialize();
+  //mpu9250.beginAccel();
+  
   Serial.print("Connecting to WIFI");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -89,6 +101,9 @@ void loop()
     }
     doConnectBT = false;
   }
-  
+  OscWiFi.update(); // should be called to receive + send osc
+//  mpu6050.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz); // Get all 9 axis data (acc + gyro + magneto)
+//  Serial.println(" ");
+//  Serial.println(ax);
   delay(1000);
 }
